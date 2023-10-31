@@ -169,7 +169,10 @@ def main():
     args = parser.parse_args()
 
     env = Environment(args.game)
-
+    seed_seq = numpy.random.SeedSequence(0)
+    np_seed = seed_seq.entropy
+    rng = numpy.random.Generator(numpy.random.PCG64(seed_seq))
+    env.reset(rng)
     network_param = find_best_run(args.filename, int(args.numruns), int(args.windowsize), args.agent)
     run_agent(env, network_param, args.agent)
 

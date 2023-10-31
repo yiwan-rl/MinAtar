@@ -40,8 +40,8 @@ class Env:
         }
         self.action_map = ['n','l','u','r','d','f']
         self.ramping = ramping
-        self.random = np.random.RandomState()
-        self.reset()
+        # self.random = np.random.RandomState()
+        # self.reset()
 
     # Update environment according to agent action
     def act(self, a):
@@ -133,7 +133,8 @@ class Env:
         return state
 
     # Reset to start state for new episode
-    def reset(self):
+    def reset(self, np_random):
+        self.np_random = np_random
         self.pos = 5
         self.f_bullet_map = np.zeros((10,10))
         self.e_bullet_map = np.zeros((10,10))

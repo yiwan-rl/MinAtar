@@ -19,6 +19,9 @@ env = Environment(args.game)
 e = 0
 returns = []
 num_actions = env.num_actions()
+seed_seq = numpy.random.SeedSequence(0)
+np_seed = seed_seq.entropy
+rng = numpy.random.Generator(numpy.random.PCG64(seed_seq))
 
 # Run NUM_EPISODES episodes and log all returns
 while e < NUM_EPISODES:
@@ -26,7 +29,7 @@ while e < NUM_EPISODES:
     G = 0.0
 
     # Initialize the environment
-    env.reset()
+    env.reset(rng)
     terminated = False
 
     #Obtain first state, unused by random agent, but inluded for illustration

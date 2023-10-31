@@ -3,7 +3,7 @@ import numpy as np
 import gymnasium as gym
 from gymnasium import spaces
 from gymnasium.envs.registration import register
-
+from typing import Optional
 try:
     import seaborn as sns
 except:
@@ -41,13 +41,12 @@ class BaseEnv(gym.Env):
             self.render()
         return self.game.state(), reward, done, False, {}
 
-    def seed(self, seed=None):
-        self.game.seed(seed)
-
-    def reset(self, seed=None, options=None):
-        if seed is not None:
-            self.seed(seed)
-        self.game.reset()
+    def reset(self,
+        *,
+        seed: Optional[int] = None,
+        options: Optional[dict] = None):
+        super().reset(seed)
+        self.game.reset(self.np_random)
         if self.render_mode == "human":
             self.render()
         return self.game.state(), {}

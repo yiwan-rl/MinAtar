@@ -26,7 +26,6 @@ class Environment:
     def __init__(self, env_name, sticky_action_prob=0.1,
                 difficulty_ramping=True):
         env_module = import_module('minatar.environments.' + env_name)
-        self.random = np.random.RandomState()
         self.env_name = env_name
         self.env = env_module.Env(ramping=difficulty_ramping)
         self.n_channels = self.env.state_shape()[2]
@@ -35,15 +34,9 @@ class Environment:
         self.visualized = False
         self.closed = False
 
-    # Seeding numpy random for reproducibility
-    def seed(self, seed=None):
-        if seed is not None:
-            self.random = np.random.RandomState(seed)
-            self.env.random = self.random
-
     # Wrapper for env.act
     def act(self, a):
-        if self.random.rand() < self.sticky_action_prob:
+        if self.np_random.uniform() < self.sticky_action_prob:
             a = self.last_action
         self.last_action = a
         return self.env.act(a)
@@ -53,8 +46,9 @@ class Environment:
         return self.env.state()
 
     # Wrapper for env.reset
-    def reset(self):
-        return self.env.reset()
+    def reset(self, np_random):
+        self.np_random = np_random
+        return self.env.reset(np_random)
 
     # Wrapper for env.state_shape
     def state_shape(self):

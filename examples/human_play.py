@@ -10,6 +10,7 @@ import argparse
 import tkinter as Tk
 from minatar import Environment
 from minatar.gui import GUI
+import numpy
 
 ################################################################################################################
 # Script that allows a human to play any of the MinAtar games. Use arrow keys to move and space to fire. 
@@ -22,6 +23,10 @@ args = parser.parse_args()
 
 # Setup game environment and GUI
 env = Environment(args.game)
+seed_seq = numpy.random.SeedSequence(0)
+np_seed = seed_seq.entropy
+rng = numpy.random.Generator(numpy.random.PCG64(seed_seq))
+env.reset(rng)
 gui = GUI(env.game_name(), env.n_channels)
 
 # Thread safe variables for use with GUI

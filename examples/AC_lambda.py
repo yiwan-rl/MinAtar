@@ -252,13 +252,17 @@ def AC_lambda(env, output_file_name, store_intermediate_result=False, load_path=
 
     # Start the simulation
     # Train for a number of frames
+    seed_seq = numpy.random.SeedSequence(0)
+    np_seed = seed_seq.entropy
+    rng = numpy.random.Generator(numpy.random.PCG64(seed_seq))
+
     t_start = time.time()
     while t < NUM_FRAMES:
         # Initialize the return for every episode (we should see this eventually increase)
         G = 0.0
 
         # Initialize the environment and start state
-        env.reset()
+        env.reset(rng)
         s = get_state(env.state())
         is_terminated = False
         s_last = None
@@ -351,7 +355,6 @@ def main():
         load_file_path = args.loadfile
 
     env = Environment(args.game)
-
     print('Cuda available?:'+str(torch.cuda.is_available()))
     AC_lambda(env, file_name, args.save, load_file_path, alpha=args.alpha)
 
